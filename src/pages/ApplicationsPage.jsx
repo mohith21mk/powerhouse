@@ -14,24 +14,19 @@ import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
 import SearchInput from '../components/ui/SearchInput';
 import EmptyState from '../components/ui/EmptyState';
-import { applicationsStats, initialApplicationsList } from '../data/applicationsData';
+import { useBusinessAnalysis } from '../context/BusinessAnalysisContext';
 
 export default function ApplicationsPage({ showToast, setModalState }) {
+  const { businessTemplateBundle } = useBusinessAnalysis();
+  const { applicationsStats, applicationsList: initialApplicationsList } = businessTemplateBundle;
+
   const [applications, setApplications] = useState(initialApplicationsList);
   const [search, setSearch] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
 
-  const departments = [
-    'All',
-    'Directorate of Industries',
-    'Pollution Control Board',
-    'Fire & Emergency Services',
-    'Electricity Supply Board',
-    'Labour Department',
-  ];
-
-  const statuses = ['All', 'Submitted', 'Under Review', 'Approved', 'Pending'];
+  const departments = ['All', ...new Set(initialApplicationsList.map((a) => a.department))];
+  const statuses = ['All', 'Submitted', 'Under Review', 'Approved', 'Pending', 'In Progress'];
 
   const filteredApps = applications.filter((app) => {
     const matchSearch =
@@ -72,11 +67,11 @@ export default function ApplicationsPage({ showToast, setModalState }) {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
             Applications
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-            Monitor and track your government and regulatory applications.
+          <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
+            Monitor and track your department submissions and statutory clearances.
           </p>
         </div>
 
@@ -93,59 +88,59 @@ export default function ApplicationsPage({ showToast, setModalState }) {
 
       {/* Top 5 Stats Summary Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4">
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-4 flex items-center justify-between">
+        <div className="bg-[#111827] rounded-2xl border border-[#1E293B] shadow-2xs p-4 flex items-center justify-between">
           <div>
-            <div className="text-xs font-semibold text-slate-500">Total Applications</div>
-            <div className="text-xl sm:text-2xl font-black text-slate-900 mt-1">{applicationsStats.total}</div>
+            <div className="text-xs font-semibold text-slate-400">Total Applications</div>
+            <div className="text-xl sm:text-2xl font-black text-white mt-1">{applicationsStats.total || 3}</div>
           </div>
-          <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
+          <div className="w-9 h-9 rounded-xl bg-blue-950 text-blue-400 flex items-center justify-center border border-blue-800">
             <Send className="w-4 h-4" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-4 flex items-center justify-between">
+        <div className="bg-[#111827] rounded-2xl border border-[#1E293B] shadow-2xs p-4 flex items-center justify-between">
           <div>
-            <div className="text-xs font-semibold text-slate-500">Submitted</div>
-            <div className="text-xl sm:text-2xl font-black text-sky-600 mt-1">{applicationsStats.submitted}</div>
+            <div className="text-xs font-semibold text-slate-400">Submitted</div>
+            <div className="text-xl sm:text-2xl font-black text-sky-400 mt-1">{applicationsStats.submitted || 1}</div>
           </div>
-          <div className="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center border border-sky-100">
+          <div className="w-9 h-9 rounded-xl bg-sky-950 text-sky-400 flex items-center justify-center border border-sky-800">
             <FileSpreadsheet className="w-4 h-4" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-4 flex items-center justify-between">
+        <div className="bg-[#111827] rounded-2xl border border-[#1E293B] shadow-2xs p-4 flex items-center justify-between">
           <div>
-            <div className="text-xs font-semibold text-slate-500">Under Review</div>
-            <div className="text-xl sm:text-2xl font-black text-indigo-600 mt-1">{applicationsStats.underReview}</div>
+            <div className="text-xs font-semibold text-slate-400">In Progress / Review</div>
+            <div className="text-xl sm:text-2xl font-black text-indigo-400 mt-1">{applicationsStats.underReview || 2}</div>
           </div>
-          <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100">
+          <div className="w-9 h-9 rounded-xl bg-indigo-950 text-indigo-400 flex items-center justify-center border border-indigo-800">
             <Clock className="w-4 h-4" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-4 flex items-center justify-between">
+        <div className="bg-[#111827] rounded-2xl border border-[#1E293B] shadow-2xs p-4 flex items-center justify-between">
           <div>
-            <div className="text-xs font-semibold text-slate-500">Approved</div>
-            <div className="text-xl sm:text-2xl font-black text-emerald-600 mt-1">{applicationsStats.approved}</div>
+            <div className="text-xs font-semibold text-slate-400">Approved</div>
+            <div className="text-xl sm:text-2xl font-black text-emerald-400 mt-1">{applicationsStats.approved || 0}</div>
           </div>
-          <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+          <div className="w-9 h-9 rounded-xl bg-emerald-950 text-emerald-400 flex items-center justify-center border border-emerald-800">
             <CheckCircle2 className="w-4 h-4" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-4 flex items-center justify-between col-span-2 sm:col-span-1">
+        <div className="bg-[#111827] rounded-2xl border border-[#1E293B] shadow-2xs p-4 flex items-center justify-between col-span-2 sm:col-span-1">
           <div>
-            <div className="text-xs font-semibold text-slate-500">Pending Action</div>
-            <div className="text-xl sm:text-2xl font-black text-amber-600 mt-1">{applicationsStats.pending}</div>
+            <div className="text-xs font-semibold text-slate-400">Pending Docs</div>
+            <div className="text-xl sm:text-2xl font-black text-amber-400 mt-1">{applicationsStats.pending || 0}</div>
           </div>
-          <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100">
+          <div className="w-9 h-9 rounded-xl bg-amber-950 text-amber-400 flex items-center justify-center border border-amber-800">
             <AlertCircle className="w-4 h-4" />
           </div>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div className="bg-[#111827] rounded-2xl border border-[#1E293B] shadow-2xs p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div className="flex-1 max-w-sm">
           <SearchInput
             value={search}
@@ -159,7 +154,7 @@ export default function ApplicationsPage({ showToast, setModalState }) {
           <select
             value={departmentFilter}
             onChange={(e) => setDepartmentFilter(e.target.value)}
-            className="px-3 py-2 text-xs font-medium rounded-xl border border-slate-200 bg-white hover:border-slate-300 focus:border-blue-500 focus:outline-none transition-all text-slate-700"
+            className="px-3 py-2 text-xs font-medium rounded-xl border border-[#1E293B] bg-[#141C2B] hover:border-slate-700 focus:border-blue-500 focus:outline-none transition-all text-slate-200"
           >
             {departments.map((d) => (
               <option key={d} value={d}>
@@ -171,7 +166,7 @@ export default function ApplicationsPage({ showToast, setModalState }) {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 text-xs font-medium rounded-xl border border-slate-200 bg-white hover:border-slate-300 focus:border-blue-500 focus:outline-none transition-all text-slate-700"
+            className="px-3 py-2 text-xs font-medium rounded-xl border border-[#1E293B] bg-[#141C2B] hover:border-slate-700 focus:border-blue-500 focus:outline-none transition-all text-slate-200"
           >
             {statuses.map((s) => (
               <option key={s} value={s}>
@@ -195,11 +190,11 @@ export default function ApplicationsPage({ showToast, setModalState }) {
           }}
         />
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden">
+        <div className="bg-[#111827] rounded-2xl border border-[#1E293B] shadow-2xs overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-slate-200/80 text-slate-400 font-semibold uppercase tracking-wider text-[11px] bg-slate-50/50">
+                <tr className="border-b border-slate-800 text-slate-400 font-semibold uppercase tracking-wider text-[11px] bg-[#141C2B]/50">
                   <th className="py-3.5 px-4">Application ID</th>
                   <th className="py-3.5 px-4">Application Name</th>
                   <th className="py-3.5 px-4">Department</th>
@@ -209,25 +204,25 @@ export default function ApplicationsPage({ showToast, setModalState }) {
                   <th className="py-3.5 px-4 text-right">Details</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+              <tbody className="divide-y divide-slate-800/60 font-medium text-slate-300">
                 {filteredApps.map((app) => (
-                  <tr key={app.id} className="hover:bg-slate-50/80 transition-colors group">
-                    <td className="py-4 px-4 font-mono font-bold text-blue-600">
+                  <tr key={app.id} className="hover:bg-[#141C2B]/60 transition-colors group">
+                    <td className="py-4 px-4 font-mono font-bold text-blue-400">
                       {app.id}
                     </td>
-                    <td className="py-4 px-4 font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                    <td className="py-4 px-4 font-bold text-white group-hover:text-blue-400 transition-colors">
                       {app.application}
                     </td>
-                    <td className="py-4 px-4 text-slate-600 flex items-center gap-1.5 mt-2.5">
+                    <td className="py-4 px-4 text-slate-400 flex items-center gap-1.5 mt-2.5">
                       <Building className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                       <span>{app.department}</span>
                     </td>
-                    <td className="py-4 px-4 text-slate-700 font-medium">
-                      <span className="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-slate-700 text-[11px]">
+                    <td className="py-4 px-4 text-slate-200 font-medium">
+                      <span className="px-2 py-0.5 rounded-md bg-[#141C2B] border border-slate-700 text-slate-300 text-[11px]">
                         {app.currentStage}
                       </span>
                     </td>
-                    <td className="py-4 px-4 font-mono text-slate-500 text-[11px]">
+                    <td className="py-4 px-4 font-mono text-slate-400 text-[11px]">
                       {app.referenceNo}
                     </td>
                     <td className="py-4 px-4">
@@ -238,7 +233,7 @@ export default function ApplicationsPage({ showToast, setModalState }) {
                     <td className="py-4 px-4 text-right">
                       <button
                         onClick={() => handleOpenDetail(app)}
-                        className="py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-transparent hover:border-blue-200 transition-colors inline-flex items-center gap-1 text-xs font-semibold cursor-pointer"
+                        className="py-1.5 px-3 rounded-lg bg-[#141C2B] hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700 transition-colors inline-flex items-center gap-1 text-xs font-semibold cursor-pointer"
                       >
                         <span>Timeline</span>
                         <ChevronRight className="w-3.5 h-3.5" />

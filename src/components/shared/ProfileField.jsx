@@ -14,10 +14,10 @@ export default function ProfileField({
   className = '',
 }) {
   return (
-    <div className={`flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-slate-100 last:border-b-0 gap-2 ${className}`}>
+    <div className={`flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-slate-800/80 last:border-b-0 gap-2 ${className}`}>
       <div className="flex items-center gap-2 min-w-[180px] shrink-0">
         {Icon && <Icon className="w-4 h-4 text-slate-400 shrink-0" />}
-        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
           {label}
         </span>
       </div>
@@ -29,7 +29,7 @@ export default function ProfileField({
               name={name}
               value={value || ''}
               onChange={onChange}
-              className="w-full sm:w-auto min-w-[220px] px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 bg-white hover:border-slate-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all cursor-pointer text-slate-900"
+              className="w-full sm:w-auto min-w-[220px] px-3 py-1.5 text-xs font-medium rounded-xl border border-slate-700 bg-[#141C2B] hover:border-slate-600 focus:border-blue-500 focus:outline-none transition-all cursor-pointer text-slate-100"
             >
               {options.map((opt) => (
                 <option key={opt} value={opt}>
@@ -44,7 +44,7 @@ export default function ProfileField({
               onChange={onChange}
               placeholder={placeholder}
               rows={2}
-              className="w-full px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 bg-white hover:border-slate-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all text-slate-900"
+              className="w-full px-3 py-1.5 text-xs font-medium rounded-xl border border-slate-700 bg-[#141C2B] hover:border-slate-600 focus:border-blue-500 focus:outline-none transition-all text-slate-100"
             />
           ) : (
             <input
@@ -53,14 +53,14 @@ export default function ProfileField({
               value={value || ''}
               onChange={onChange}
               placeholder={placeholder}
-              className="w-full sm:w-auto min-w-[220px] px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 bg-white hover:border-slate-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all text-slate-900 text-left sm:text-right"
+              className="w-full sm:w-auto min-w-[220px] px-3 py-1.5 text-xs font-medium rounded-xl border border-slate-700 bg-[#141C2B] hover:border-slate-600 focus:border-blue-500 focus:outline-none transition-all text-slate-100 text-left sm:text-right"
             />
           )
         ) : badge ? (
           <div className="flex sm:justify-end">{badge}</div>
         ) : (
-          <span className="text-xs sm:text-sm font-bold text-slate-900 block truncate">
-            {value || '—'}
+          <span className="text-xs font-bold text-white truncate block">
+            {value || <span className="text-slate-500 font-normal italic">Not provided</span>}
           </span>
         )}
       </div>

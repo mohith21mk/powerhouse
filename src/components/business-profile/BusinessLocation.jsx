@@ -12,25 +12,25 @@ import { profileOptions } from '../../data/businessProfileData';
 
 export default function BusinessLocation({ data, isEditing, onChange }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-5 sm:p-6">
+    <div className="bg-[#111827] rounded-2xl border border-[#1E293B] shadow-2xs p-5 sm:p-6">
       {/* Header */}
-      <div className="flex items-center gap-2.5 pb-4 border-b border-slate-100">
-        <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-100">
+      <div className="flex items-center gap-2.5 pb-4 border-b border-slate-800">
+        <div className="p-1.5 rounded-lg bg-blue-950 text-blue-400 border border-blue-800">
           <MapPin className="w-4 h-4" />
         </div>
         <div>
-          <h3 className="text-base font-bold text-slate-900 leading-none">
+          <h3 className="text-base font-bold text-white leading-none">
             Business Location
           </h3>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Registered location and operating address.
           </p>
         </div>
       </div>
 
-      {/* Content grid: Fields on left, Abstract Map placeholder on right */}
+      {/* Content grid */}
       <div className="mt-4 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <div className="lg:col-span-7 divide-y divide-slate-50">
+        <div className="lg:col-span-7 divide-y divide-slate-800/60">
           <ProfileField
             label="Registered Address"
             value={data.registeredAddress}
@@ -49,7 +49,7 @@ export default function BusinessLocation({ data, isEditing, onChange }) {
             isEditing={isEditing}
             onChange={onChange}
             icon={Navigation}
-            placeholder="e.g. Mumbai"
+            placeholder="e.g. Tiruppur"
           />
 
           <ProfileField
@@ -80,7 +80,7 @@ export default function BusinessLocation({ data, isEditing, onChange }) {
             isEditing={isEditing}
             onChange={onChange}
             icon={MapPin}
-            placeholder="400093"
+            placeholder="641604"
           />
 
           <ProfileField
@@ -90,31 +90,23 @@ export default function BusinessLocation({ data, isEditing, onChange }) {
             isEditing={isEditing}
             onChange={onChange}
             icon={Map}
-            placeholder="Mumbai, Maharashtra"
+            placeholder="Tiruppur, Tamil Nadu"
           />
         </div>
 
-        {/* Abstract Map Graphic Placeholder */}
-        <div className="lg:col-span-5 flex flex-col items-center justify-center p-6 bg-slate-50/80 rounded-xl border border-dashed border-slate-200 text-center min-h-[220px]">
+        {/* Location Graphic Card */}
+        <div className="lg:col-span-5 flex flex-col items-center justify-center p-6 bg-[#141C2B] rounded-xl border border-slate-800 text-center min-h-[220px]">
           <div className="relative mb-3">
-            <div className="w-16 h-16 rounded-2xl bg-blue-100/70 border border-blue-200 flex items-center justify-center text-blue-600 shadow-xs">
-              <MapPin className="w-8 h-8 animate-bounce stroke-[2.2]" />
+            <div className="w-16 h-16 rounded-2xl bg-blue-950 border border-blue-800 flex items-center justify-center text-blue-400 shadow-xs">
+              <MapPin className="w-8 h-8" />
             </div>
-            <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-white flex items-center justify-center text-[9px] text-white font-bold">
-              ✓
-            </span>
           </div>
-
-          <span className="text-xs font-bold text-slate-800">
-            {data.city}, {data.state}
+          <span className="text-xs font-bold text-white block">
+            {data.city || 'Tiruppur'}, {data.state || 'Tamil Nadu'}
           </span>
-          <span className="text-[11px] text-slate-500 mt-0.5">
-            PIN: {data.pinCode} • Geo-verified
-          </span>
-
-          <div className="mt-3 px-3 py-1 bg-white rounded-md border border-slate-200 text-[10px] font-medium text-slate-600">
-            Industrial Estate Jurisdiction: MIDC Andheri Zone
-          </div>
+          <p className="text-[11px] text-slate-400 max-w-[200px] mt-1">
+            Statutory jurisdiction: {data.city || 'Tiruppur'} Municipal Corporation &amp; State Commercial Taxes.
+          </p>
         </div>
       </div>
     </div>

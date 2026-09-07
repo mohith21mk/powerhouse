@@ -1,6 +1,6 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
-const dataContent = export const initialBusinessProfile = {
+const initialBusinessProfile = {
   // Business Information
   businessName: 'Powerhouse Industries',
   businessType: 'Private Limited Company',

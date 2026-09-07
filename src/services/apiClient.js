@@ -5,44 +5,130 @@
  * Provides resilient fallbacks if the backend server is temporarily unreachable.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1';
 
 class ApiClient {
   constructor(baseUrl = API_BASE_URL) {
     this.baseUrl = baseUrl.replace(/\/$/, '');
+    this.token = typeof window !== 'undefined' ? window.localStorage.getItem('ph_token') : null;
+  }
+
+  setToken(token) {
+    this.token = token;
+    if (typeof window !== 'undefined') {
+      if (token) {
+        window.localStorage.setItem('ph_token', token);
+      } else {
+        window.localStorage.removeItem('ph_token');
+      }
+    }
+  }
+
+  getToken() {
+    if (!this.token && typeof window !== 'undefined') {
+      this.token = window.localStorage.getItem('ph_token');
+    }
+    return this.token;
+  }
+
+  clearToken() {
+    this.setToken(null);
   }
 
   async request(endpoint, options = {}) {
     const url = `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+    const token = this.getToken();
     const headers = {
       'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     };
 
+    let response;
     try {
-      const response = await fetch(url, {
+      response = await fetch(url, {
         ...options,
         headers,
       });
+    } catch (fetchError) {
+      // Genuine network failure: backend server offline, connection refused, DNS failure
+      const netErr = new Error('Authentication service is unavailable. Please check your connection.');
+      netErr.isNetworkError = true;
+      netErr.originalError = fetchError;
+      throw netErr;
+    }
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || `API error (${response.status}): ${response.statusText}`);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      let message = '';
+      if (typeof errorData.detail === 'string') {
+        message = errorData.detail;
+      } else if (Array.isArray(errorData.detail)) {
+        message = errorData.detail
+          .map((d) => d.msg || `${d.loc ? d.loc.slice(1).join('.') : 'field'}: invalid value`)
+          .join(', ');
+      } else if (errorData.message) {
+        message = errorData.message;
+      } else {
+        message = `API error (${response.status}): ${response.statusText}`;
       }
 
-      return await response.json();
-    } catch (err) {
-      // Re-throw with contextual tag so consumers can decide to fall back
-      err.isNetworkError = true;
-      throw err;
+      const httpError = new Error(message);
+      httpError.status = response.status;
+      httpError.statusText = response.statusText;
+      httpError.errorData = errorData;
+      httpError.isNetworkError = false;
+      throw httpError;
     }
+
+    return await response.json();
   }
 
   // Health check
   async getHealth() {
     const healthUrl = this.baseUrl.replace(/\/api\/v1$/, '') + '/health';
     const res = await fetch(healthUrl);
+    if (!res.ok) {
+      throw new Error(`Health check failed with status ${res.status}`);
+    }
     return await res.json();
+  }
+
+  // Authentication Endpoints
+  async signup(data) {
+    const res = await this.request('/auth/signup', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    if (res?.access_token) {
+      this.setToken(res.access_token);
+    }
+    return res;
+  }
+
+  async login(data) {
+    const res = await this.request('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    if (res?.access_token) {
+      this.setToken(res.access_token);
+    }
+    return res;
+  }
+
+  async getMe() {
+    return this.request('/auth/me');
+  }
+
+  async logout() {
+    try {
+      await this.request('/auth/logout', { method: 'POST' });
+    } catch (e) {
+      // Proceed with local logout regardless of network
+    } finally {
+      this.clearToken();
+    }
   }
 
   // Business Profile Endpoints
@@ -172,7 +258,24 @@ class ApiClient {
       method: 'PATCH',
     });
   }
+
+  // Hybrid Regulatory Vector RAG Endpoints
+  async queryRag(businessProfileId, question, topK = 5) {
+    return this.request('/rag/query', {
+      method: 'POST',
+      body: JSON.stringify({
+        business_profile_id: businessProfileId,
+        question: question,
+        top_k: topK,
+      }),
+    });
+  }
+
+  async getRagSources() {
+    return this.request('/rag/sources');
+  }
 }
 
 export const apiClient = new ApiClient();
 export default apiClient;
+

@@ -21,10 +21,22 @@ class Settings(BaseSettings):
         "sqlite:///./powerhouse.db"
     )
 
+    SECRET_KEY: str = os.getenv(
+        "SECRET_KEY",
+        "powerhouse-enterprise-regulatory-secret-key-2026-compliance"
+    )
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
+
     BACKEND_CORS_ORIGINS: Union[List[str], str] = [
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+        "http://localhost:5175",
+        "http://127.0.0.1:5175",
         "http://localhost:3000",
+        "http://127.0.0.1:3000",
     ]
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")

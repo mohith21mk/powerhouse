@@ -32,23 +32,23 @@ export default function BusinessIntelligencePreview({ onViewAnalysis, isAnalyzin
   ];
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-5 sm:p-6 flex flex-col justify-between">
+    <div className="bg-[#111827] rounded-2xl border border-[#1E293B] p-5 sm:p-6 flex flex-col justify-between">
       <div>
-        <div className="flex items-center gap-2.5 pb-4 border-b border-slate-100">
-          <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-100">
+        <div className="flex items-center gap-2.5 pb-4 border-b border-slate-800">
+          <div className="p-1.5 rounded-lg bg-blue-900/30 text-blue-400 border border-blue-800/50">
             <BrainCircuit className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-slate-900 leading-none">
+            <h3 className="text-base font-bold text-slate-100 leading-none">
               Business Intelligence Preview
             </h3>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-400 mt-1">
               Deterministic regulatory discovery engine
             </p>
           </div>
         </div>
 
-        <p className="text-xs text-slate-600 leading-relaxed mt-4">
+        <p className="text-xs text-slate-400 leading-relaxed mt-4">
           Based on your business profile, POWER HOUSE can analyze your compliance and approval requirements.
         </p>
 
@@ -59,7 +59,7 @@ export default function BusinessIntelligencePreview({ onViewAnalysis, isAnalyzin
             return (
               <div
                 key={idx}
-                className="p-3 rounded-xl bg-slate-50/70 border border-slate-100 flex items-center justify-between gap-3 group hover:bg-slate-50 transition-colors"
+                className="p-3 rounded-xl bg-[#141C2B] border border-[#1E293B] flex items-center justify-between gap-3 group hover:border-slate-700 transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <div
@@ -67,11 +67,11 @@ export default function BusinessIntelligencePreview({ onViewAnalysis, isAnalyzin
                   >
                     <Icon className="w-4 h-4" />
                   </div>
-                  <span className="text-xs font-semibold text-slate-700 leading-tight">
+                  <span className="text-xs font-semibold text-slate-300 leading-tight">
                     {item.label}
                   </span>
                 </div>
-                <span className="text-lg font-extrabold text-slate-900 shrink-0">
+                <span className="text-lg font-extrabold text-slate-100 shrink-0">
                   {item.value}
                 </span>
               </div>
@@ -80,7 +80,7 @@ export default function BusinessIntelligencePreview({ onViewAnalysis, isAnalyzin
         </div>
       </div>
 
-      <div className="mt-5 pt-4 border-t border-slate-100">
+      <div className="mt-5 pt-4 border-t border-slate-800">
         <Button
           variant="primary"
           size="sm"

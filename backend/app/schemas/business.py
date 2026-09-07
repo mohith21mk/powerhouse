@@ -36,6 +36,11 @@ class BusinessProfileBase(BaseModel):
     gstin: Optional[str] = None
     udyam_number: Optional[str] = None
 
+    user_id: Optional[str] = None
+    onboarding_completed: bool = False
+    business_category: Optional[str] = None
+    image_category: Optional[str] = None
+
 
 class BusinessProfileCreate(BusinessProfileBase):
     pass
@@ -74,9 +79,18 @@ class BusinessProfileUpdate(BaseModel):
     gstin: Optional[str] = None
     udyam_number: Optional[str] = None
 
+    user_id: Optional[str] = None
+    onboarding_completed: Optional[bool] = None
+    business_category: Optional[str] = None
+    image_category: Optional[str] = None
+
 
 class BusinessProfileResponse(BusinessProfileBase):
     id: str
+    user_id: Optional[str] = None
+    onboarding_completed: bool = False
+    business_category: Optional[str] = None
+    image_category: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 

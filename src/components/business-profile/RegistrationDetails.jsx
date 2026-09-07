@@ -30,17 +30,17 @@ export default function RegistrationDetails({ data, isEditing, onChange }) {
   ];
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-5 sm:p-6">
+    <div className="bg-[#111827] rounded-2xl border border-[#1E293B] p-5 sm:p-6">
       {/* Header */}
-      <div className="flex items-center gap-2.5 pb-4 border-b border-slate-100">
-        <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-100">
+      <div className="flex items-center gap-2.5 pb-4 border-b border-slate-800">
+        <div className="p-1.5 rounded-lg bg-blue-900/30 text-blue-400 border border-blue-800/50">
           <FileCheck className="w-4 h-4" />
         </div>
         <div>
-          <h3 className="text-base font-bold text-slate-900 leading-none">
+          <h3 className="text-base font-bold text-slate-100 leading-none">
             Registration Details
           </h3>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Statutory registration numbers and IDs.
           </p>
         </div>
@@ -55,12 +55,12 @@ export default function RegistrationDetails({ data, isEditing, onChange }) {
           return (
             <div
               key={item.key}
-              className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white hover:border-blue-200 transition-all flex flex-col justify-between group"
+              className="p-3.5 rounded-xl border border-[#1E293B] bg-[#141C2B] hover:border-slate-700 transition-all flex flex-col justify-between group"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-1.5">
-                  <Icon className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-colors" />
-                  <span className="text-xs font-semibold text-slate-600">
+                  <Icon className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-400 transition-colors" />
+                  <span className="text-xs font-semibold text-slate-400">
                     {item.label}
                   </span>
                 </div>
@@ -68,12 +68,12 @@ export default function RegistrationDetails({ data, isEditing, onChange }) {
                 {!isEditing && item.value && !item.isBadge && (
                   <button
                     onClick={() => handleCopy(item.value, item.key)}
-                    className="p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
+                    className="p-1 rounded text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors cursor-pointer"
                     title={`Copy ${item.label}`}
                     aria-label={`Copy ${item.label}`}
                   >
                     {isCopied ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-600 animate-in zoom-in" />
+                      <Check className="w-3.5 h-3.5 text-emerald-400 animate-in zoom-in" />
                     ) : (
                       <Copy className="w-3.5 h-3.5" />
                     )}
@@ -88,7 +88,7 @@ export default function RegistrationDetails({ data, isEditing, onChange }) {
                     name={item.key}
                     value={item.value || ''}
                     onChange={onChange}
-                    className="w-full px-2.5 py-1 text-xs font-mono font-medium rounded-lg border border-slate-200 bg-white text-slate-900 focus:outline-none focus:border-blue-500"
+                    className="w-full px-2.5 py-1 text-xs font-mono font-medium rounded-lg border border-[#1E293B] bg-[#0B0F17] text-slate-100 focus:outline-none focus:border-blue-500"
                   />
                 ) : item.isBadge ? (
                   <div className="pt-0.5">
@@ -97,13 +97,13 @@ export default function RegistrationDetails({ data, isEditing, onChange }) {
                     </Badge>
                   </div>
                 ) : (
-                  <div className="font-mono text-xs sm:text-sm font-bold text-slate-900 tracking-tight select-all">
+                  <div className="font-mono text-xs sm:text-sm font-bold text-slate-100 tracking-tight select-all">
                     {item.value}
                   </div>
                 )}
 
                 {item.desc && (
-                  <span className="text-[10px] text-slate-400 mt-1 block">
+                  <span className="text-[10px] text-slate-500 mt-1 block">
                     {item.desc}
                   </span>
                 )}

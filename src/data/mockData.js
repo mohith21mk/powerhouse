@@ -1,4 +1,4 @@
-﻿export const summaryStats = [
+export const summaryStats = [
   {
     id: 'approvals',
     title: 'Approvals Required',
@@ -197,14 +197,15 @@ export const notificationsList = [
 ];
 
 export const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: 'LayoutDashboard' },
-  { id: 'business-profile', label: 'Business Profile', icon: 'Building2' },
-  { id: 'approvals', label: 'Approvals & Licences', icon: 'FileCheck' },
-  { id: 'compliance-tasks', label: 'Compliance Tasks', icon: 'CheckSquare' },
-  { id: 'documents', label: 'Documents', icon: 'FolderKanban' },
+  { id: 'overview', label: 'Overview', icon: 'LayoutDashboard' },
+  { id: 'approvals', label: 'Licences & Approvals', icon: 'FileText' },
+  { id: 'compliance-tasks', label: 'Compliance Tasks', icon: 'CalendarCheck' },
+  { id: 'documents', label: 'Documents Vault', icon: 'FolderLock' },
   { id: 'applications', label: 'Applications', icon: 'Send' },
   { id: 'government-schemes', label: 'Government Schemes', icon: 'Landmark' },
-  { id: 'alerts', label: 'Alerts', icon: 'BellRing', badge: '3' },
-  { id: 'reports', label: 'Reports', icon: 'BarChart3' },
+  { id: 'alerts', label: 'Alerts & Notifications', icon: 'Bell', badge: '3' },
+  { id: 'reports', label: 'Reports & Analytics', icon: 'BarChart3' },
+  { id: 'ai', label: 'AI Compliance Advisor', icon: 'Brain' },
   { id: 'settings', label: 'Settings', icon: 'Settings' },
 ];
+

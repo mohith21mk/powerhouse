@@ -13,24 +13,24 @@ import { profileOptions } from '../../data/businessProfileData';
 
 export default function BusinessInformation({ data, isEditing, onChange }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-5 sm:p-6">
+    <div className="bg-[#111827] rounded-2xl border border-[#1E293B] shadow-2xs p-5 sm:p-6">
       {/* Header */}
-      <div className="flex items-center gap-2.5 pb-4 border-b border-slate-100">
-        <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-100">
+      <div className="flex items-center gap-2.5 pb-4 border-b border-slate-800">
+        <div className="p-1.5 rounded-lg bg-blue-950 text-blue-400 border border-blue-800">
           <Building2 className="w-4 h-4" />
         </div>
         <div>
-          <h3 className="text-base font-bold text-slate-900 leading-none">
+          <h3 className="text-base font-bold text-white leading-none">
             Business Information
           </h3>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Basic information about your business.
           </p>
         </div>
       </div>
 
       {/* Fields List */}
-      <div className="mt-4 divide-y divide-slate-50">
+      <div className="mt-4 divide-y divide-slate-800/60">
         <ProfileField
           label="Business Name"
           value={data.businessName}

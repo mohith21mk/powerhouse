@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, String, Integer, Boolean, DateTime, Text
+from sqlalchemy import Column, String, Integer, Boolean, DateTime, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
@@ -9,6 +9,11 @@ class BusinessProfile(Base):
     __tablename__ = "business_profiles"
 
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()), index=True)
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
+    onboarding_completed = Column(Boolean, nullable=False, default=False)
+    business_category = Column(String(100), nullable=True, index=True)
+    image_category = Column(String(100), nullable=True)
+
     business_name = Column(String(255), nullable=False, index=True)
     business_type = Column(String(100), nullable=False)
     industry = Column(String(100), nullable=False)
@@ -45,6 +50,7 @@ class BusinessProfile(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     # Relationships
+    user = relationship("User", back_populates="business_profiles")
     analyses = relationship("BusinessAnalysis", back_populates="business_profile", cascade="all, delete-orphan")
     approvals = relationship("Approval", back_populates="business_profile", cascade="all, delete-orphan")
     compliance_tasks = relationship("ComplianceTask", back_populates="business_profile", cascade="all, delete-orphan")
