@@ -27,10 +27,10 @@ export default function Button({
   };
 
   const sizes = {
-    xs: 'px-2.5 py-1 text-xs gap-1.5',
-    sm: 'px-3.5 py-1.5 text-xs sm:text-sm gap-1.5',
-    md: 'px-4 py-2 text-xs sm:text-sm gap-2',
-    lg: 'px-5 py-2.5 text-sm sm:text-base gap-2.5',
+    xs: 'px-2.5 py-1 text-xs gap-1 min-h-[28px]',
+    sm: 'px-3.5 py-1.5 text-xs gap-1.5 min-h-[34px]',
+    md: 'px-4 py-2 text-xs sm:text-sm gap-2 min-h-[40px]',
+    lg: 'px-5 py-2.5 text-sm gap-2 min-h-[44px]',
   };
 
   return (

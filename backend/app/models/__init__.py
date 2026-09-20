@@ -10,6 +10,13 @@ from app.models.alert import Alert
 from app.models.action_proposal import ActionProposal
 from app.models.audit_log import AuditLog
 from app.models.regulatory_knowledge import RegulatoryKnowledgeDocument, RegulatoryChunk
+from app.models.green_opportunity import GreenOpportunity
+from app.models.emission_factor import EmissionFactor
+from app.models.green_impact import GreenImpactMeasurement
+from app.models.agent_run import AgentRun
+from app.models.green_metric import GreenOperationalMetric
+from app.models.supplier import Supplier, SupplierDocument, SupplyItem, SupplyChainRisk
+from app.models.workforce import EmployeeProfile, RoleProfile, SkillGap, LearningPath
 
 __all__ = [
     "User",
@@ -25,5 +32,19 @@ __all__ = [
     "AuditLog",
     "RegulatoryKnowledgeDocument",
     "RegulatoryChunk",
+    "GreenOpportunity",
+    "EmissionFactor",
+    "GreenImpactMeasurement",
+    "AgentRun",
+    "GreenOperationalMetric",
+    "Supplier",
+    "SupplierDocument",
+    "SupplyItem",
+    "SupplyChainRisk",
+    "EmployeeProfile",
+    "RoleProfile",
+    "SkillGap",
+    "LearningPath",
 ]
+
 

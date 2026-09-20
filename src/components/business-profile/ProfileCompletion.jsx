@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, ShieldCheck } from 'lucide-react';
 import Button from '../ui/Button';
 
 export default function ProfileCompletion({ onCompleteClick, completionPercentage = 85, remainingItems = 2 }) {
@@ -12,7 +12,7 @@ export default function ProfileCompletion({ onCompleteClick, completionPercentag
         <div className="max-w-xl space-y-2">
           <div className="flex items-center gap-2">
             <span className="p-1 rounded-md bg-blue-500/20 text-blue-400 border border-blue-400/30">
-              <Sparkles className="w-3.5 h-3.5" />
+              <ShieldCheck className="w-3.5 h-3.5" />
             </span>
             <span className="text-xs font-semibold uppercase tracking-wider text-blue-400">
               Action Required

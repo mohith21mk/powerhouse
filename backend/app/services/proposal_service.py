@@ -131,6 +131,97 @@ class ProposalService:
                 app.updated_at = datetime.utcnow()
                 db.add(app)
 
+        elif entity_type in ["green_opportunity", "green"]:
+            from app.models.green_opportunity import GreenOpportunity
+            opp = None
+            if proposal.affected_entity_id:
+                opp = db.query(GreenOpportunity).filter(
+                    GreenOpportunity.id == proposal.affected_entity_id,
+                    GreenOpportunity.business_profile_id == business_profile_id
+                ).first()
+            if opp:
+                entity_name = opp.title
+                prev_state = opp.status
+                opp.status = "TASK_CREATED"
+                opp.approved_at = datetime.utcnow()
+                db.add(opp)
+
+                # Create a governed Compliance Task in the existing task system
+                new_task = ComplianceTask(
+                    id=str(uuid.uuid4()),
+                    business_profile_id=business_profile_id,
+                    title=f"[Green Ops] {opp.title}",
+                    description=opp.recommended_action,
+                    category="Green Operations",
+                    priority=opp.priority,
+                    status="Upcoming",
+                    due_date="Due in 14 days",
+                    estimated_days=14,
+                    assignee=confirmed_by,
+                )
+                db.add(new_task)
+                new_state = "TASK_CREATED"
+
+        elif entity_type in ["supply_chain_risk", "supply_risk", "supplier"]:
+            from app.models.supplier import SupplyChainRisk
+            risk = None
+            if proposal.affected_entity_id:
+                risk = db.query(SupplyChainRisk).filter(
+                    SupplyChainRisk.id == proposal.affected_entity_id,
+                    SupplyChainRisk.business_id == business_profile_id
+                ).first()
+            if risk:
+                entity_name = risk.title
+                prev_state = risk.status
+                risk.status = "ACTION_CREATED"
+                risk.updated_at = datetime.utcnow()
+                db.add(risk)
+
+                new_task = ComplianceTask(
+                    id=str(uuid.uuid4()),
+                    business_profile_id=business_profile_id,
+                    title=f"[Supply Chain] {risk.title}",
+                    description=risk.recommended_action,
+                    category="Supply Chain Resilience",
+                    priority=risk.priority,
+                    status="Upcoming",
+                    due_date="Due in 14 days",
+                    estimated_days=14,
+                    assignee=confirmed_by,
+                )
+                db.add(new_task)
+                new_state = "ACTION_CREATED"
+
+        elif entity_type in ["skill_gap", "learning_path", "workforce"]:
+            from app.models.workforce import SkillGap, LearningPath
+            gap = None
+            if proposal.affected_entity_id:
+                gap = db.query(SkillGap).filter(
+                    SkillGap.id == proposal.affected_entity_id,
+                    SkillGap.business_id == business_profile_id
+                ).first()
+            if gap:
+                entity_name = f"Upskill {gap.required_skill}"
+                prev_state = gap.status
+                gap.status = "ENROLLED"
+                gap.updated_at = datetime.utcnow()
+                db.add(gap)
+
+                new_task = ComplianceTask(
+                    id=str(uuid.uuid4()),
+                    business_profile_id=business_profile_id,
+                    title=f"[Workforce] Upskill: {gap.required_skill}",
+                    description=gap.recommended_action,
+                    category="Workforce Intelligence",
+                    priority="Medium",
+                    status="Upcoming",
+                    due_date="Due in 21 days",
+                    estimated_days=21,
+                    assignee=confirmed_by,
+                )
+                db.add(new_task)
+                new_state = "ENROLLED"
+
         # Update proposal state
         proposal.status = "Executed"
         proposal.confirmed_by = confirmed_by

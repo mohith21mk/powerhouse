@@ -25,6 +25,9 @@ class Document(Base):
     verification_date = Column(String(50), nullable=True)
     renewal_cycle = Column(String(50), nullable=True)
     storage_path = Column(String(500), nullable=True)
+    content_hash = Column(String(64), nullable=True, index=True)
+    analysis_status = Column(String(50), nullable=False, default="Uploaded")
+    extracted_data = Column(String(4000), nullable=True)
 
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)

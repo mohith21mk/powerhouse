@@ -13,6 +13,9 @@ from app.api.audit import router as audit_router
 from app.api.compare import router as compare_router
 from app.api.demo import router as demo_router
 from app.api.rag import router as rag_router
+from app.api.green import router as green_router
+from app.api.supply_chain import router as supply_chain_router
+from app.api.workforce import router as workforce_router
 
 api_router = APIRouter()
 
@@ -30,4 +33,8 @@ api_router.include_router(audit_router)
 api_router.include_router(compare_router)
 api_router.include_router(demo_router)
 api_router.include_router(rag_router)
+api_router.include_router(green_router)
+api_router.include_router(supply_chain_router)
+api_router.include_router(workforce_router)
+
 

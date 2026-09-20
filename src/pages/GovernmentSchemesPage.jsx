@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Landmark,
-  Sparkles,
   ArrowRight,
   TrendingUp,
   RefreshCw
@@ -76,7 +75,7 @@ export default function GovernmentSchemesPage({ showToast, setModalState }) {
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-xl">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-950 border border-blue-800 text-blue-400 text-xs font-semibold">
-              <Sparkles className="w-3.5 h-3.5" />
+              <Landmark className="w-3.5 h-3.5" />
               <span>{schemesHighlight.title || 'Verified Regulatory Match'}</span>
             </div>
             <h2 className="text-lg sm:text-xl font-bold tracking-tight text-white">

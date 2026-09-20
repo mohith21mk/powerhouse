@@ -16,6 +16,9 @@ class DocumentBase(BaseModel):
     verification_date: Optional[str] = None
     renewal_cycle: Optional[str] = None
     storage_path: Optional[str] = None
+    content_hash: Optional[str] = None
+    analysis_status: Optional[str] = "Uploaded"
+    extracted_data: Optional[str] = None
 
 
 class DocumentCreate(DocumentBase):
@@ -36,12 +39,17 @@ class DocumentUpdate(BaseModel):
     verification_date: Optional[str] = None
     renewal_cycle: Optional[str] = None
     storage_path: Optional[str] = None
+    content_hash: Optional[str] = None
+    analysis_status: Optional[str] = None
+    extracted_data: Optional[str] = None
 
 
 class DocumentResponse(DocumentBase):
     id: str
     business_profile_id: str
     approval_id: Optional[str] = None
+    mapped_approval: Optional[str] = None
+    evidence_status: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 

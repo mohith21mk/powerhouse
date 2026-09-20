@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, BrainCircuit, ArrowRight, FileCheck, Gift, CalendarClock, RefreshCw } from 'lucide-react';
+import { BrainCircuit, ArrowRight, FileCheck, Gift, CalendarClock, RefreshCw } from 'lucide-react';
 import Button from '../ui/Button';
 import { useBusinessAnalysis } from '../../context/BusinessAnalysisContext';
 
@@ -95,7 +95,7 @@ export default function BusinessIntelligencePreview({ onViewAnalysis, isAnalyzin
             </>
           ) : (
             <>
-              <Sparkles className="w-3.5 h-3.5" />
+              <BrainCircuit className="w-3.5 h-3.5" />
               <span>View Business Analysis</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </>

@@ -38,8 +38,9 @@ class ApiClient {
   async request(endpoint, options = {}) {
     const url = `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
     const token = this.getToken();
+    const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
     const headers = {
-      'Content-Type': 'application/json',
+      ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     };
@@ -214,6 +215,55 @@ class ApiClient {
     return this.request(`/documents${query ? `?${query}` : ''}`);
   }
 
+  async getDocument(id) {
+    return this.request(`/documents/${id}`);
+  }
+
+  async uploadDocument(formData) {
+    return this.request('/documents/upload', {
+      method: 'POST',
+      body: formData,
+    });
+  }
+
+  async getDocumentIntelligence(id) {
+    return this.request(`/documents/${id}/intelligence`);
+  }
+
+  async deleteDocument(id) {
+    return this.request(`/documents/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  getDocumentFileUrl(id) {
+    return `${this.baseUrl}/documents/${id}/file`;
+  }
+
+  async downloadDocumentFile(id, filename = 'document.pdf') {
+    const token = this.getToken();
+    const url = this.getDocumentFileUrl(id);
+    const response = await fetch(url, {
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to download document (${response.status})`);
+    }
+
+    const blob = await response.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(downloadUrl);
+    document.body.removeChild(a);
+  }
+
   async createDocument(data) {
     return this.request('/documents', {
       method: 'POST',
@@ -274,8 +324,198 @@ class ApiClient {
   async getRagSources() {
     return this.request('/rag/sources');
   }
+
+  // Green Industry Flow AI Endpoints
+  async getGreenSummary(businessProfileId) {
+    return this.request(`/green/summary?business_profile_id=${businessProfileId}`);
+  }
+
+  async getGreenOpportunities(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    return this.request(`/green/opportunities?${query}`);
+  }
+
+  async getGreenOpportunity(id, businessProfileId) {
+    return this.request(`/green/opportunities/${id}?business_profile_id=${businessProfileId}`);
+  }
+
+  async getGreenOpportunityEvidence(id, businessProfileId) {
+    return this.request(`/green/opportunities/${id}/evidence?business_profile_id=${businessProfileId}`);
+  }
+
+  async getGreenOpportunityTrace(id, businessProfileId) {
+    return this.request(`/green/opportunities/${id}/trace?business_profile_id=${businessProfileId}`);
+  }
+
+  async runGreenAgent(businessProfileId) {
+    return this.request(`/green/agent/run?business_profile_id=${businessProfileId}`, {
+      method: 'POST',
+    });
+  }
+
+  async createGreenProposal(opportunityId, businessProfileId) {
+    return this.request(`/green/opportunities/${opportunityId}/proposal?business_profile_id=${businessProfileId}`, {
+      method: 'POST',
+    });
+  }
+
+  async getGreenScore(businessProfileId) {
+    return this.request(`/green/score?business_profile_id=${businessProfileId}`);
+  }
+
+  async getGreenImpact(businessProfileId) {
+    return this.request(`/green/impact?business_profile_id=${businessProfileId}`);
+  }
+
+  async verifyGreenImpact(impactId, businessProfileId, data) {
+    return this.request(`/green/impact/${impactId}/verify?business_profile_id=${businessProfileId}`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getGreenAgentRuns(businessProfileId) {
+    return this.request(`/green/agent-runs?business_profile_id=${businessProfileId}`);
+  }
+
+  async getEmissionFactors() {
+    return this.request('/green/emission-factors');
+  }
+
+  async seedGreenDemoData(businessProfileId) {
+    return this.request(`/green/demo/seed?business_profile_id=${businessProfileId}`, {
+      method: 'POST',
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // SUPPLY CHAIN RESILIENCE METHODS
+  // ---------------------------------------------------------------------------
+  async getSupplyChainSummary(businessProfileId) {
+    return this.request(`/supply-chain/summary?business_profile_id=${businessProfileId}`);
+  }
+
+  async getSuppliers(businessProfileId) {
+    return this.request(`/supply-chain/suppliers?business_profile_id=${businessProfileId}`);
+  }
+
+  async createSupplier(businessProfileId, supplierData) {
+    return this.request(`/supply-chain/suppliers?business_profile_id=${businessProfileId}`, {
+      method: 'POST',
+      body: JSON.stringify(supplierData),
+    });
+  }
+
+  async getSupplyItems(businessProfileId) {
+    return this.request(`/supply-chain/items?business_profile_id=${businessProfileId}`);
+  }
+
+  async getSupplyRisks(businessProfileId, status = null) {
+    const url = status
+      ? `/supply-chain/risks?business_profile_id=${businessProfileId}&status=${encodeURIComponent(status)}`
+      : `/supply-chain/risks?business_profile_id=${businessProfileId}`;
+    return this.request(url);
+  }
+
+  async getRiskDetail(businessProfileId, riskId) {
+    return this.request(`/supply-chain/risks/${riskId}?business_profile_id=${businessProfileId}`);
+  }
+
+  async getRiskEvidence(businessProfileId, riskId) {
+    return this.request(`/supply-chain/evidence/${riskId}?business_profile_id=${businessProfileId}`);
+  }
+
+  async runSupplyChainAnalysis(businessProfileId) {
+    return this.request(`/supply-chain/analyze?business_profile_id=${businessProfileId}`, {
+      method: 'POST',
+    });
+  }
+
+  async createSupplyChainProposal(riskId, businessProfileId) {
+    return this.request(`/supply-chain/proposal/${riskId}?business_profile_id=${businessProfileId}`, {
+      method: 'POST',
+    });
+  }
+
+  async seedDemoSupplyChain(businessProfileId) {
+    return this.request(`/supply-chain/demo/seed?business_profile_id=${businessProfileId}`, {
+      method: 'POST',
+    });
+  }
+
+  async cleanupDemoSupplyChain(businessProfileId) {
+    return this.request(`/supply-chain/demo/cleanup?business_profile_id=${businessProfileId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // WORKFORCE INTELLIGENCE METHODS
+  // ---------------------------------------------------------------------------
+  async getWorkforceSummary(businessProfileId) {
+    return this.request(`/workforce/summary?business_profile_id=${businessProfileId}`);
+  }
+
+  async getEmployees(businessProfileId) {
+    return this.request(`/workforce/employees?business_profile_id=${businessProfileId}`);
+  }
+
+  async createEmployee(businessProfileId, employeeData) {
+    return this.request(`/workforce/employees?business_profile_id=${businessProfileId}`, {
+      method: 'POST',
+      body: JSON.stringify(employeeData),
+    });
+  }
+
+  async getRoles(businessProfileId) {
+    return this.request(`/workforce/roles?business_profile_id=${businessProfileId}`);
+  }
+
+  async createRole(businessProfileId, roleData) {
+    return this.request(`/workforce/roles?business_profile_id=${businessProfileId}`, {
+      method: 'POST',
+      body: JSON.stringify(roleData),
+    });
+  }
+
+  async getSkillGaps(businessProfileId) {
+    return this.request(`/workforce/skill-gaps?business_profile_id=${businessProfileId}`);
+  }
+
+  async getLearningPaths(businessProfileId) {
+    return this.request(`/workforce/learning-paths?business_profile_id=${businessProfileId}`);
+  }
+
+  async getSkillGapEvidence(businessProfileId, gapId) {
+    return this.request(`/workforce/evidence/${gapId}?business_profile_id=${businessProfileId}`);
+  }
+
+  async runWorkforceAnalysis(businessProfileId) {
+    return this.request(`/workforce/analyze?business_profile_id=${businessProfileId}`, {
+      method: 'POST',
+    });
+  }
+
+  async createWorkforceProposal(gapId, businessProfileId) {
+    return this.request(`/workforce/proposal/${gapId}?business_profile_id=${businessProfileId}`, {
+      method: 'POST',
+    });
+  }
+
+  async seedDemoWorkforce(businessProfileId) {
+    return this.request(`/workforce/demo/seed?business_profile_id=${businessProfileId}`, {
+      method: 'POST',
+    });
+  }
+
+  async cleanupDemoWorkforce(businessProfileId) {
+    return this.request(`/workforce/demo/cleanup?business_profile_id=${businessProfileId}`, {
+      method: 'DELETE',
+    });
+  }
 }
 
 export const apiClient = new ApiClient();
 export default apiClient;
+
 

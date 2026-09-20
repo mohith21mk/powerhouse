@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FolderKanban,
   FileCheck,
@@ -14,22 +14,58 @@ import Badge from '../components/ui/Badge';
 import SearchInput from '../components/ui/SearchInput';
 import EmptyState from '../components/ui/EmptyState';
 import { useBusinessAnalysis } from '../context/BusinessAnalysisContext';
+import { useAuth } from '../context/AuthContext';
+import apiClient from '../services/apiClient';
 
 export default function DocumentsPage({ showToast, setModalState }) {
-  const { businessTemplateBundle } = useBusinessAnalysis();
-  const { documentsStats, documentsList: initialDocumentsList } = businessTemplateBundle;
+  const { businessTemplateBundle, backendProfileId } = useBusinessAnalysis();
+  const { activeBusiness } = useAuth();
+  const { documentsList: initialDocumentsList } = businessTemplateBundle;
 
   const [documents, setDocuments] = useState(initialDocumentsList);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
 
-  const categories = ['All', ...new Set(initialDocumentsList.map((d) => d.category))];
+  // Reactively sync documents whenever active business workspace or category changes
+  useEffect(() => {
+    let isMounted = true;
+    const baseDocs = businessTemplateBundle?.documentsList || [];
+    const targetProfileId = activeBusiness?.id || backendProfileId;
+
+    async function loadBusinessDocuments() {
+      if (targetProfileId) {
+        try {
+          const backendDocs = await apiClient.getDocuments({ business_profile_id: targetProfileId });
+          if (isMounted && Array.isArray(backendDocs) && backendDocs.length > 0) {
+            // Merge backend uploaded documents with baseline required documents
+            const backendDocNames = new Set(backendDocs.map((d) => d.name.toLowerCase()));
+            const remainingBaseDocs = baseDocs.filter((d) => !backendDocNames.has(d.name.toLowerCase()));
+            setDocuments([...backendDocs, ...remainingBaseDocs]);
+            return;
+          }
+        } catch {
+          // Backend offline or fallback to template workspace
+        }
+      }
+      if (isMounted) {
+        setDocuments(baseDocs);
+      }
+    }
+
+    loadBusinessDocuments();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [activeBusiness?.id, businessTemplateBundle, backendProfileId]);
+
+  const categories = ['All', ...new Set(documents.map((d) => d.category))];
   const statuses = ['All', 'Verified', 'Pending', 'Rejected'];
 
   const filteredDocs = documents.filter((doc) => {
     const matchSearch = doc.name.toLowerCase().includes(search.toLowerCase()) ||
-      (doc.relatedApproval && doc.relatedApproval.toLowerCase().includes(search.toLowerCase())) ||
+      ((doc.mapped_approval || doc.relatedApproval) && (doc.mapped_approval || doc.relatedApproval).toLowerCase().includes(search.toLowerCase())) ||
       doc.category.toLowerCase().includes(search.toLowerCase());
     const matchCat = categoryFilter === 'All' || doc.category === categoryFilter;
     const matchStatus = statusFilter === 'All' || doc.status === statusFilter;
@@ -42,9 +78,11 @@ export default function DocumentsPage({ showToast, setModalState }) {
       title: 'Upload Business Document',
       type: 'upload-document',
       data: {
+        businessProfileId: activeBusiness?.id || backendProfileId,
+        approvalsList: businessTemplateBundle?.approvalsList || [],
         onUpload: (newDoc) => {
-          setDocuments((prev) => [newDoc, ...prev]);
-          showToast(`Document "${newDoc.name}" uploaded successfully.`);
+          setDocuments((prev) => [newDoc, ...prev.filter((d) => d.name.toLowerCase() !== newDoc.name.toLowerCase())]);
+          if (showToast) showToast(`Document "${newDoc.name}" uploaded successfully.`);
         },
       },
     });
@@ -55,9 +93,20 @@ export default function DocumentsPage({ showToast, setModalState }) {
       isOpen: true,
       title: doc.name,
       type: 'document-detail',
-      data: doc,
+      data: {
+        ...doc,
+        onDelete: (deletedId) => {
+          setDocuments((prev) => prev.filter((d) => d.id !== deletedId));
+        },
+      },
     });
   };
+
+  const totalDocsCount = documents.length;
+  const verifiedDocsCount = documents.filter((d) => d.status === 'Verified' || d.evidence_status === 'Supported').length;
+  const pendingDocsCount = documents.filter((d) => d.status === 'Pending' || d.status === 'Uploaded' || d.evidence_status === 'Needs Review').length;
+  const expiringDocsCount = documents.filter((d) => d.status === 'Rejected' || d.expiry_radar === 'Expired' || d.expiry_radar === 'Critical').length;
+  const coveragePercent = totalDocsCount > 0 ? Math.round((verifiedDocsCount / totalDocsCount) * 100) : 100;
 
   return (
     <div className="space-y-6">
@@ -88,7 +137,7 @@ export default function DocumentsPage({ showToast, setModalState }) {
         <div className="bg-[#111827] rounded-2xl border border-[#1E293B] shadow-2xs p-4 sm:p-5 flex items-center justify-between">
           <div>
             <div className="text-xs font-semibold text-slate-400">Total Documents</div>
-            <div className="text-xl sm:text-2xl font-black text-white mt-1">{documentsStats.total || 24}</div>
+            <div className="text-xl sm:text-2xl font-black text-white mt-1">{totalDocsCount}</div>
             <div className="text-[11px] text-slate-400 mt-0.5">Digital vault</div>
           </div>
           <div className="w-10 h-10 rounded-xl bg-blue-950/80 text-blue-400 flex items-center justify-center border border-blue-800/80 shrink-0">
@@ -99,7 +148,7 @@ export default function DocumentsPage({ showToast, setModalState }) {
         <div className="bg-[#111827] rounded-2xl border border-[#1E293B] shadow-2xs p-4 sm:p-5 flex items-center justify-between">
           <div>
             <div className="text-xs font-semibold text-slate-400">Verified</div>
-            <div className="text-xl sm:text-2xl font-black text-emerald-400 mt-1">{documentsStats.verified || 18}</div>
+            <div className="text-xl sm:text-2xl font-black text-emerald-400 mt-1">{verifiedDocsCount}</div>
             <div className="text-[11px] text-slate-400 mt-0.5">Authority approved</div>
           </div>
           <div className="w-10 h-10 rounded-xl bg-emerald-950/80 text-emerald-400 flex items-center justify-center border border-emerald-800/80 shrink-0">
@@ -110,7 +159,7 @@ export default function DocumentsPage({ showToast, setModalState }) {
         <div className="bg-[#111827] rounded-2xl border border-[#1E293B] shadow-2xs p-4 sm:p-5 flex items-center justify-between">
           <div>
             <div className="text-xs font-semibold text-slate-400">Pending Review</div>
-            <div className="text-xl sm:text-2xl font-black text-amber-400 mt-1">{documentsStats.pending || 6}</div>
+            <div className="text-xl sm:text-2xl font-black text-amber-400 mt-1">{pendingDocsCount}</div>
             <div className="text-[11px] text-slate-400 mt-0.5">Under audit / verification</div>
           </div>
           <div className="w-10 h-10 rounded-xl bg-amber-950/80 text-amber-400 flex items-center justify-center border border-amber-800/80 shrink-0">
@@ -121,7 +170,7 @@ export default function DocumentsPage({ showToast, setModalState }) {
         <div className="bg-[#111827] rounded-2xl border border-[#1E293B] shadow-2xs p-4 sm:p-5 flex items-center justify-between">
           <div>
             <div className="text-xs font-semibold text-slate-400">Expiring Soon</div>
-            <div className="text-xl sm:text-2xl font-black text-rose-400 mt-1">{documentsStats.rejected || 2}</div>
+            <div className="text-xl sm:text-2xl font-black text-rose-400 mt-1">{expiringDocsCount}</div>
             <div className="text-[11px] text-slate-400 mt-0.5">Renewal required</div>
           </div>
           <div className="w-10 h-10 rounded-xl bg-rose-950/80 text-rose-400 flex items-center justify-center border border-rose-800/80 shrink-0">
@@ -141,7 +190,7 @@ export default function DocumentsPage({ showToast, setModalState }) {
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-bold text-white tracking-wide">Statutory Evidence Coverage</h3>
                 <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
-                  82% COVERED
+                  {coveragePercent}% COVERED
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">
@@ -151,13 +200,13 @@ export default function DocumentsPage({ showToast, setModalState }) {
           </div>
           <div className="flex items-center gap-2 shrink-0 text-xs font-semibold">
             <span className="px-2.5 py-1 rounded-lg bg-emerald-950/80 text-emerald-400 border border-emerald-800/80">
-              18 Supported
+              {verifiedDocsCount} Supported
             </span>
             <span className="px-2.5 py-1 rounded-lg bg-amber-950/80 text-amber-400 border border-amber-800/80">
-              3 Under Review
+              {pendingDocsCount} Under Review
             </span>
             <span className="px-2.5 py-1 rounded-lg bg-rose-950/80 text-rose-400 border border-rose-800/80">
-              3 Missing Proof
+              {expiringDocsCount} Expired / Flagged
             </span>
           </div>
         </div>
@@ -281,7 +330,18 @@ export default function DocumentsPage({ showToast, setModalState }) {
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => showToast(`Downloading ${doc.name}...`)}
+                          onClick={async () => {
+                            if (doc.storage_path) {
+                              try {
+                                await apiClient.downloadDocumentFile(doc.id, doc.file_name || `${doc.name}.${(doc.file_type || 'pdf').toLowerCase()}`);
+                                if (showToast) showToast(`Downloaded "${doc.name}" successfully.`);
+                              } catch {
+                                if (showToast) showToast('Download failed. Document service might be unreachable.');
+                              }
+                            } else {
+                              if (showToast) showToast(`Downloading statutory verification reference for "${doc.name}"...`);
+                            }
+                          }}
                           className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
                           title="Download File"
                           aria-label="Download File"
@@ -303,11 +363,13 @@ export default function DocumentsPage({ showToast, setModalState }) {
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2.5">
                     <span className="w-7 h-7 rounded-md bg-blue-950 text-blue-400 flex items-center justify-center font-bold text-[10px] border border-blue-800">
-                      {doc.fileType || 'PDF'}
+                      {doc.fileType || doc.file_type || 'PDF'}
                     </span>
                     <div>
                       <h3 className="font-bold text-white text-xs">{doc.name}</h3>
-                      <span className="text-[10px] text-slate-400">{doc.fileSize} • {doc.category}</span>
+                      <span className="text-[10px] text-slate-400">
+                        {doc.fileSize || doc.file_size || 'Standard Size'} • {doc.category}
+                      </span>
                     </div>
                   </div>
                   <Badge variant={doc.status} withDot size="xs">
@@ -316,10 +378,10 @@ export default function DocumentsPage({ showToast, setModalState }) {
                 </div>
 
                 <div className="text-xs text-slate-300 bg-[#141C2B] p-2.5 rounded-xl border border-slate-800 space-y-1">
-                  <div><strong>Approval:</strong> {doc.relatedApproval}</div>
+                  <div><strong>Approval:</strong> {doc.mapped_approval || doc.relatedApproval}</div>
                   <div className="flex items-center justify-between text-[11px] text-slate-400">
-                    <span>Uploaded: {doc.uploadDate}</span>
-                    <span>Expiry: {doc.expiryDate}</span>
+                    <span>Uploaded: {doc.upload_date || doc.uploadDate}</span>
+                    <span>Expiry: {doc.expiry_date || doc.expiryDate}</span>
                   </div>
                 </div>
 
@@ -331,7 +393,18 @@ export default function DocumentsPage({ showToast, setModalState }) {
                     View Details
                   </button>
                   <button
-                    onClick={() => showToast(`Downloading ${doc.name}...`)}
+                    onClick={async () => {
+                      if (doc.storage_path) {
+                        try {
+                          await apiClient.downloadDocumentFile(doc.id, doc.file_name || `${doc.name}.${(doc.file_type || 'pdf').toLowerCase()}`);
+                          if (showToast) showToast(`Downloaded "${doc.name}" successfully.`);
+                        } catch {
+                          if (showToast) showToast('Download failed.');
+                        }
+                      } else {
+                        if (showToast) showToast(`Downloading statutory record for "${doc.name}"...`);
+                      }
+                    }}
                     className="px-3 py-1.5 rounded-lg bg-[#141C2B] text-slate-300 text-xs font-semibold hover:bg-slate-800 border border-slate-700 cursor-pointer"
                   >
                     Download

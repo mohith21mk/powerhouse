@@ -16,7 +16,6 @@ import AIComplianceAdvisorPage from './pages/AIComplianceAdvisorPage';
 import {
   X,
   CheckCircle2,
-  UploadCloud,
   AlertTriangle,
   FileCheck,
   BrainCircuit,
@@ -34,14 +33,42 @@ import WhyPriorityModal from './components/modals/WhyPriorityModal';
 import ActionProposalModal from './components/modals/ActionProposalModal';
 import CategoryComparisonModal from './components/modals/CategoryComparisonModal';
 import AuditTrailModal from './components/modals/AuditTrailModal';
+import UploadDocumentModal from './components/modals/UploadDocumentModal';
+import DocumentDetailModal from './components/modals/DocumentDetailModal';
+import GreenOperationsPage from './pages/GreenOperationsPage';
+import SupplyChainPage from './pages/SupplyChainPage';
+import WorkforcePage from './pages/WorkforcePage';
+import WhyOpportunityModal from './components/modals/WhyOpportunityModal';
+import GreenScoreExplainModal from './components/modals/GreenScoreExplainModal';
+import WhySupplyRiskModal from './components/modals/WhySupplyRiskModal';
+import WhySkillGapModal from './components/modals/WhySkillGapModal';
 
 function MainAppContent() {
-  const { logout } = useAuth();
+  const { logout, activeBusiness } = useAuth();
   const [activeNav, setActiveNav] = useState('overview');
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem('powerhouse_sidebar_collapsed') === 'true';
+    } catch {
+      return false;
+    }
+  });
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [modalState, setModalState] = useState({ isOpen: false, title: '', type: '', data: null });
   const [toastMessage, setToastMessage] = useState(null);
+
+  const handleToggleSidebar = () => {
+    setSidebarCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem('powerhouse_sidebar_collapsed', String(next));
+      } catch {
+        // ignore localStorage errors
+      }
+      return next;
+    });
+  };
 
   const { isAnalyzing, currentStepIndex, analysisSteps, resetOnboarding, analysisResult, businessTemplateBundle } = useBusinessAnalysis();
   const activeBusinessName = analysisResult?.businessSummary?.businessName || 'your business';
@@ -50,10 +77,6 @@ function MainAppContent() {
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskPriority, setNewTaskPriority] = useState('High');
   const [newTaskApproval, setNewTaskApproval] = useState('');
-
-  const [newDocName, setNewDocName] = useState('');
-  const [newDocCategory, setNewDocCategory] = useState('Statutory License');
-  const [newDocApproval, setNewDocApproval] = useState('');
 
   const [newAppDept, setNewAppDept] = useState('');
   const [newAppTitle, setNewAppTitle] = useState('');
@@ -64,9 +87,6 @@ function MainAppContent() {
   const approvalNameOptions = (businessTemplateBundle?.approvalsList || []).map((a) => a.name);
   const effectiveTaskApproval = approvalNameOptions.includes(newTaskApproval)
     ? newTaskApproval
-    : (approvalNameOptions[0] || '');
-  const effectiveDocApproval = approvalNameOptions.includes(newDocApproval)
-    ? newDocApproval
     : (approvalNameOptions[0] || '');
   const departmentOptions = [...new Set((businessTemplateBundle?.applicationsList || []).map((a) => a.department))];
   const effectiveAppDept = departmentOptions.includes(newAppDept)
@@ -127,7 +147,7 @@ function MainAppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0F17] flex font-sans antialiased text-slate-100 selection:bg-blue-600 selection:text-white">
+    <div className="h-screen h-[100dvh] w-screen overflow-hidden flex bg-[#0B0F17] font-sans antialiased text-slate-100 selection:bg-blue-600 selection:text-white">
       {/* Toast Notification Container */}
       {toastMessage && (
         <div className="fixed bottom-5 right-5 z-50 bg-[#111827] text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-2xl border border-[#1E293B] flex items-center gap-3 animate-in fade-in slide-in-from-bottom-3 duration-200">
@@ -193,7 +213,7 @@ function MainAppContent() {
         </div>
       )}
 
-      {/* Main Sidebar */}
+      {/* Main Sidebar (pinned height, never scrolls with page) */}
       <Sidebar
         activeNav={activeNav}
         setActiveNav={(nav) => {
@@ -202,10 +222,12 @@ function MainAppContent() {
         mobileOpen={mobileOpen}
         setMobileOpen={setMobileOpen}
         onContactSupport={handleContactSupport}
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={handleToggleSidebar}
       />
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 lg:pl-[260px] transition-all duration-300">
+      {/* Main Content Column: Top header pinned, main viewport independently scrolls */}
+      <div className="flex-1 h-full min-w-0 flex flex-col overflow-hidden">
         {/* Sticky Top Header */}
         <Header
           onRefresh={handleRefresh}
@@ -213,17 +235,21 @@ function MainAppContent() {
           onOpenMobileMenu={() => setMobileOpen(true)}
           onOpenProfile={handleOpenProfile}
           onOpenNotification={handleOpenNotification}
+          onContactSupport={handleContactSupport}
+          isSidebarCollapsed={sidebarCollapsed}
+          onToggleSidebar={handleToggleSidebar}
         />
 
-        {/* Page Content Viewport */}
-        <main className="flex-1 px-4 sm:px-8 py-6 max-w-7xl w-full mx-auto">
-          {(activeNav === 'dashboard' || activeNav === 'overview') && (
-            <Dashboard
-              modalState={modalState}
-              setModalState={setModalState}
-              onNavigate={(route) => setActiveNav(route)}
-            />
-          )}
+        {/* Page Content Viewport - Only this scrolls */}
+        <main className="flex-1 min-h-0 overflow-y-auto w-full px-2.5 sm:px-3.5 py-2.5 scrollbar-thin">
+          <div className="max-w-[1680px] mx-auto w-full space-y-2.5">
+            {(activeNav === 'dashboard' || activeNav === 'overview') && (
+              <Dashboard
+                modalState={modalState}
+                setModalState={setModalState}
+                onNavigate={(route) => setActiveNav(route)}
+              />
+            )}
 
           {activeNav === 'ai' && (
             <AIComplianceAdvisorPage
@@ -307,6 +333,31 @@ function MainAppContent() {
               setModalState={setModalState}
             />
           )}
+
+          {activeNav === 'green-flow' && (
+            <GreenOperationsPage
+              showToast={showToast}
+              onNavigate={setActiveNav}
+              setModalState={setModalState}
+            />
+          )}
+
+          {activeNav === 'supply-chain' && (
+            <SupplyChainPage
+              showToast={showToast}
+              onNavigate={setActiveNav}
+              setModalState={setModalState}
+            />
+          )}
+
+          {activeNav === 'workforce' && (
+            <WorkforcePage
+              showToast={showToast}
+              onNavigate={setActiveNav}
+              setModalState={setModalState}
+            />
+          )}
+          </div>
         </main>
       </div>
 
@@ -371,8 +422,77 @@ function MainAppContent() {
         />
       )}
 
+      {/* Upload Business Document Modal */}
+      {modalState.isOpen && modalState.type === 'upload-document' && (
+        <UploadDocumentModal
+          isOpen={true}
+          onClose={() => setModalState({ isOpen: false, title: '', type: '', data: null })}
+          businessProfileId={modalState.data?.businessProfileId || activeBusiness?.id}
+          approvalsList={modalState.data?.approvalsList || businessTemplateBundle?.approvalsList || []}
+          onUploadSuccess={(newDoc) => {
+            if (modalState.data?.onUpload) {
+              modalState.data.onUpload(newDoc);
+            }
+          }}
+          showToast={showToast}
+        />
+      )}
+
+      {/* Document Detail & Intelligence Modal */}
+      {modalState.isOpen && modalState.type === 'document-detail' && (
+        <DocumentDetailModal
+          isOpen={true}
+          onClose={() => setModalState({ isOpen: false, title: '', type: '', data: null })}
+          document={modalState.data}
+          showToast={showToast}
+          onDeleteSuccess={(deletedId) => {
+            if (modalState.data?.onDelete) {
+              modalState.data.onDelete(deletedId);
+            }
+          }}
+        />
+      )}
+
+      {/* Why Green Opportunity Modal (Explainability Trace) */}
+      {modalState.isOpen && modalState.type === 'why-green-opportunity' && (
+        <WhyOpportunityModal
+          isOpen={true}
+          onClose={() => setModalState({ isOpen: false, title: '', type: '', data: null })}
+          opportunity={modalState.data}
+        />
+      )}
+
+      {/* Why Green Score Modal (5-Pillar Breakdown) */}
+      {modalState.isOpen && modalState.type === 'why-green-score' && (
+        <GreenScoreExplainModal
+          isOpen={true}
+          onClose={() => setModalState({ isOpen: false, title: '', type: '', data: null })}
+          scoreDetail={modalState.data?.scoreDetail}
+        />
+      )}
+
+      {/* Why Supply Risk Modal (7-Stage Explainability) */}
+      {modalState.isOpen && modalState.type === 'why-supply-risk' && (
+        <WhySupplyRiskModal
+          isOpen={true}
+          onClose={() => setModalState({ isOpen: false, title: '', type: '', data: null })}
+          risk={modalState.data?.risk || modalState.data}
+          onActionProposal={modalState.data?.onActionProposal}
+        />
+      )}
+
+      {/* Why Skill Gap Modal (Competency & Inclusion Explainability) */}
+      {modalState.isOpen && modalState.type === 'why-skill-gap' && (
+        <WhySkillGapModal
+          isOpen={true}
+          onClose={() => setModalState({ isOpen: false, title: '', type: '', data: null })}
+          skillGap={modalState.data?.skillGap || modalState.data}
+          onActionProposal={modalState.data?.onActionProposal}
+        />
+      )}
+
       {/* Global Interactive Modals for Standard Application Views */}
-      {modalState.isOpen && !['why-requirement', 'compliance-health', 'why-priority', 'action-proposal', 'category-comparison', 'audit-trail'].includes(modalState.type) && (
+      {modalState.isOpen && !['why-requirement', 'compliance-health', 'why-priority', 'action-proposal', 'category-comparison', 'audit-trail', 'upload-document', 'document-detail', 'why-green-opportunity', 'why-green-score', 'why-supply-risk', 'why-skill-gap'].includes(modalState.type) && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-in fade-in duration-150"
           onClick={() => setModalState({ isOpen: false, title: '', type: '', data: null })}
@@ -499,72 +619,6 @@ function MainAppContent() {
                       <span className="text-slate-500 block text-[10px]">Due Date</span>
                       <span className="font-bold text-slate-200">{modalState.data?.dueDate}</span>
                     </div>
-                  </div>
-                </div>
-              )}
-
-              {modalState.type === 'upload-document' && (
-                <div className="space-y-4">
-                  <div className="border-2 border-dashed border-slate-700 rounded-2xl p-6 text-center bg-[#141C2B] hover:bg-[#1e293b]/50 transition-colors cursor-pointer">
-                    <UploadCloud className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-                    <span className="text-xs font-bold text-slate-200 block">Click to upload or drag & drop</span>
-                    <span className="text-[11px] text-slate-500 block mt-0.5">PDF, DOCX, XLSX up to 25MB</span>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1">Document Title</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Business Registration Certificate"
-                      value={newDocName}
-                      onChange={(e) => setNewDocName(e.target.value)}
-                      className="w-full px-3 py-2 text-xs rounded-xl bg-[#141C2B] border border-[#1E293B] text-slate-100 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-300 mb-1">Category</label>
-                      <select
-                        value={newDocCategory}
-                        onChange={(e) => setNewDocCategory(e.target.value)}
-                        className="w-full px-3 py-2 text-xs rounded-xl bg-[#141C2B] border border-[#1E293B] text-slate-100 focus:border-blue-500 focus:outline-none"
-                      >
-                        <option value="Statutory License" className="bg-[#111827]">Statutory License</option>
-                        <option value="Environmental" className="bg-[#111827]">Environmental</option>
-                        <option value="Safety" className="bg-[#111827]">Safety</option>
-                        <option value="Taxation" className="bg-[#111827]">Taxation</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-300 mb-1">Related License</label>
-                      <select
-                        value={effectiveDocApproval}
-                        onChange={(e) => setNewDocApproval(e.target.value)}
-                        className="w-full px-3 py-2 text-xs rounded-xl bg-[#141C2B] border border-[#1E293B] text-slate-100 focus:border-blue-500 focus:outline-none"
-                      >
-                        {approvalNameOptions.map((name) => (
-                          <option key={name} value={name} className="bg-[#111827]">{name}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {modalState.type === 'document-detail' && (
-                <div className="space-y-3">
-                  <div className="p-3 bg-[#141C2B] rounded-xl border border-[#1E293B] flex items-center justify-between">
-                    <div>
-                      <div className="font-bold text-slate-100">{modalState.data?.name}</div>
-                      <div className="text-xs text-slate-400">{modalState.data?.category} • {modalState.data?.fileSize}</div>
-                    </div>
-                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-950/40 text-emerald-400 border border-emerald-800/50">
-                      {modalState.data?.status}
-                    </span>
-                  </div>
-                  <div className="text-xs text-slate-400 space-y-1">
-                    <div>Uploaded on: <strong className="text-slate-200">{modalState.data?.uploadDate}</strong></div>
-                    <div>Expiry: <strong className="text-slate-200">{modalState.data?.expiryDate}</strong></div>
-                    <div>Verified by: <strong className="text-slate-200">{modalState.data?.verifiedBy}</strong></div>
                   </div>
                 </div>
               )}
@@ -755,34 +809,6 @@ function MainAppContent() {
                   className="text-xs font-semibold"
                 >
                   Continue
-                </Button>
-              )}
-
-              {modalState.type === 'upload-document' && (
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => {
-                    if (!newDocName) return;
-                    modalState.data?.onUpload({
-                      id: `doc-${Date.now()}`,
-                      name: newDocName,
-                      category: newDocCategory,
-                      relatedApproval: effectiveDocApproval,
-                      uploadDate: 'Just now',
-                      expiryDate: '31 Dec 2026',
-                      status: 'Verified',
-                      fileType: 'PDF',
-                      fileSize: '1.8 MB',
-                      uploadedBy: 'Current User',
-                      verifiedBy: 'Auto-verified',
-                    });
-                    setNewDocName('');
-                    setModalState({ isOpen: false, title: '', type: '', data: null });
-                  }}
-                  className="text-xs font-semibold"
-                >
-                  Upload File
                 </Button>
               )}
 

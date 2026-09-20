@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Sparkles,
+  ShieldCheck,
   CheckCircle2,
   Building,
   ChevronRight
@@ -50,11 +50,11 @@ export default function ApprovalRoadmap({ steps, onViewFullRoadmap }) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-100">
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-100">
-            <Sparkles className="w-4 h-4" />
+            <ShieldCheck className="w-4 h-4" />
           </div>
           <div>
             <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-none">
-              AI-Generated Approval Roadmap
+              Verified Approval Roadmap
             </h2>
             <p className="text-xs text-slate-500 mt-1">
               Custom sequential compliance pipeline based on your business sector & capacity.
