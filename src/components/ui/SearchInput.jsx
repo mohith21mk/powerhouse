@@ -10,7 +10,7 @@ export default function SearchInput({ value, onChange, placeholder = "Search..."
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full pl-8 pr-8 py-2 min-h-[40px] text-xs sm:text-sm font-medium rounded-xl border border-[#1E293B] bg-[#141C2B] hover:border-slate-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder:text-slate-400 text-slate-100 shadow-2xs"
+        className="w-full pl-8 pr-8 py-2 text-xs sm:text-sm font-medium rounded-xl border border-[#1E293B] bg-[#141C2B] hover:border-slate-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder:text-slate-400 text-slate-100 shadow-2xs"
       />
       {value && onClear && (
         <button

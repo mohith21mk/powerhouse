@@ -355,28 +355,28 @@ export default function Dashboard({ modalState: _modalState, setModalState, onNa
                 />
               </svg>
               <div className="absolute flex flex-col items-center justify-center">
-                <span className="text-[17px] font-black text-white leading-none">92%</span>
-                <span className="text-[7.5px] font-bold text-emerald-400 mt-0.5">EXCELLENT</span>
+                <span className="text-lg font-black text-white leading-none">92%</span>
+                <span className="text-[9px] font-bold text-emerald-400 mt-0.5">EXCELLENT</span>
               </div>
             </div>
 
             {/* Score Text + Glowing Shield Icon */}
             <div className="flex-1 space-y-1 min-w-0">
               <div className="flex items-center justify-between">
-                <span className="text-sm sm:text-[14.5px] font-bold text-emerald-400">Deterministic</span>
+                <span className="text-sm font-bold text-emerald-400">Deterministic</span>
                 <div className="w-6 h-6 rounded-full bg-emerald-950/80 border border-emerald-800/80 flex items-center justify-center shadow-sm shadow-emerald-500/10 group-hover:border-emerald-400 transition-colors shrink-0">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                 </div>
               </div>
-              <p className="text-[11px] text-slate-300 leading-snug">
+              <p className="text-xs text-slate-300 leading-snug">
                 Click to inspect exact formula: Licences (36.8) + Docs (23.0) + Tasks (18.4) + Filing (13.8).
               </p>
             </div>
           </div>
 
-          <div className="pt-2 border-t border-slate-800/80 mt-2 flex justify-between items-center text-xs">
-            <span className="text-emerald-400 font-semibold group-hover:underline flex items-center gap-1">
-              <span>Why 92%? Explain Breakdown</span>
+          <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs">
+            <span className="text-emerald-400 font-semibold flex items-center gap-1 group-hover:underline">
+              <span>Inspect Breakdown</span>
               <ChevronRight className="w-3 h-3" />
             </span>
             <button
@@ -394,19 +394,19 @@ export default function Dashboard({ modalState: _modalState, setModalState, onNa
       </section>
 
       {/* ROW 2: KPI Strip (4 Equal Cards in 1 Row) */}
-      <section aria-label="Key Performance Indicators" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+      <section aria-label="Key Performance Indicators" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {/* Card 1: Total Licences */}
         <div
           onClick={() => onNavigate && onNavigate('approvals')}
-          className="bg-[#111827] border border-[#1E293B] hover:border-slate-700 rounded-lg p-2.5 sm:p-3 flex items-center gap-3 transition-colors cursor-pointer min-h-[72px] sm:min-h-[74px]"
+          className="bg-[#111827] border border-[#1E293B] hover:border-slate-700 rounded-xl p-3 flex items-center gap-3 transition-colors cursor-pointer min-h-[74px]"
         >
-          <div className="w-9 h-9 rounded-lg bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 flex items-center justify-center shrink-0">
-            <FileText className="w-4.5 h-4.5" />
+          <div className="w-10 h-10 rounded-lg bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 flex items-center justify-center shrink-0">
+            <FileText className="w-5 h-5" />
           </div>
           <div className="min-w-0">
             <div className="text-xs font-semibold text-slate-400 truncate">Total Licences</div>
-            <div className="text-[20px] sm:text-[22px] font-black text-white mt-0.5 leading-none">8</div>
-            <div className="text-[11px] font-medium text-emerald-400 mt-1 truncate">
+            <div className="text-xl sm:text-2xl font-black text-white mt-0.5 leading-none">8</div>
+            <div className="text-xs font-medium text-emerald-400 mt-1 truncate">
               6 Active <span className="text-slate-500">•</span> 2 Expiring
             </div>
           </div>
@@ -415,15 +415,15 @@ export default function Dashboard({ modalState: _modalState, setModalState, onNa
         {/* Card 2: Due This Month */}
         <div
           onClick={() => onNavigate && onNavigate('compliance-tasks')}
-          className="bg-[#111827] border border-[#1E293B] hover:border-slate-700 rounded-lg p-2.5 sm:p-3 flex items-center gap-3 transition-colors cursor-pointer min-h-[72px] sm:min-h-[74px]"
+          className="bg-[#111827] border border-[#1E293B] hover:border-slate-700 rounded-xl p-3 flex items-center gap-3 transition-colors cursor-pointer min-h-[74px]"
         >
-          <div className="w-9 h-9 rounded-lg bg-amber-950/60 border border-amber-800/60 text-amber-400 flex items-center justify-center shrink-0">
-            <Calendar className="w-4.5 h-4.5" />
+          <div className="w-10 h-10 rounded-lg bg-amber-950/60 border border-amber-800/60 text-amber-400 flex items-center justify-center shrink-0">
+            <Calendar className="w-5 h-5" />
           </div>
           <div className="min-w-0">
             <div className="text-xs font-semibold text-slate-400 truncate">Due This Month</div>
-            <div className="text-[20px] sm:text-[22px] font-black text-white mt-0.5 leading-none">5</div>
-            <div className="text-[11px] font-medium text-rose-400 mt-1 truncate">
+            <div className="text-xl sm:text-2xl font-black text-white mt-0.5 leading-none">5</div>
+            <div className="text-xs font-medium text-rose-400 mt-1 truncate">
               3 Overdue <span className="text-slate-500">•</span> 2 Upcoming
             </div>
           </div>
@@ -432,15 +432,15 @@ export default function Dashboard({ modalState: _modalState, setModalState, onNa
         {/* Card 3: Documents */}
         <div
           onClick={() => onNavigate && onNavigate('documents')}
-          className="bg-[#111827] border border-[#1E293B] hover:border-slate-700 rounded-lg p-2.5 sm:p-3 flex items-center gap-3 transition-colors cursor-pointer min-h-[72px] sm:min-h-[74px]"
+          className="bg-[#111827] border border-[#1E293B] hover:border-slate-700 rounded-xl p-3 flex items-center gap-3 transition-colors cursor-pointer min-h-[74px]"
         >
-          <div className="w-9 h-9 rounded-lg bg-blue-950/60 border border-blue-800/60 text-blue-400 flex items-center justify-center shrink-0">
-            <FolderLock className="w-4.5 h-4.5" />
+          <div className="w-10 h-10 rounded-lg bg-blue-950/60 border border-blue-800/60 text-blue-400 flex items-center justify-center shrink-0">
+            <FolderLock className="w-5 h-5" />
           </div>
           <div className="min-w-0">
             <div className="text-xs font-semibold text-slate-400 truncate">Documents</div>
-            <div className="text-[20px] sm:text-[22px] font-black text-white mt-0.5 leading-none">24</div>
-            <div className="text-[11px] font-medium text-slate-300 mt-1 truncate">
+            <div className="text-xl sm:text-2xl font-black text-white mt-0.5 leading-none">24</div>
+            <div className="text-xs font-medium text-slate-300 mt-1 truncate">
               18 Valid <span className="text-slate-500">•</span> 6 Expiring
             </div>
           </div>
@@ -449,15 +449,15 @@ export default function Dashboard({ modalState: _modalState, setModalState, onNa
         {/* Card 4: Applications */}
         <div
           onClick={() => onNavigate && onNavigate('applications')}
-          className="bg-[#111827] border border-[#1E293B] hover:border-slate-700 rounded-lg p-2.5 sm:p-3 flex items-center gap-3 transition-colors cursor-pointer min-h-[72px] sm:min-h-[74px]"
+          className="bg-[#111827] border border-[#1E293B] hover:border-slate-700 rounded-xl p-3 flex items-center gap-3 transition-colors cursor-pointer min-h-[74px]"
         >
-          <div className="w-9 h-9 rounded-lg bg-purple-950/60 border border-purple-800/60 text-purple-400 flex items-center justify-center shrink-0">
-            <Send className="w-4.5 h-4.5" />
+          <div className="w-10 h-10 rounded-lg bg-purple-950/60 border border-purple-800/60 text-purple-400 flex items-center justify-center shrink-0">
+            <Send className="w-5 h-5" />
           </div>
           <div className="min-w-0">
             <div className="text-xs font-semibold text-slate-400 truncate">Applications</div>
-            <div className="text-[20px] sm:text-[22px] font-black text-white mt-0.5 leading-none">3</div>
-            <div className="text-[11px] font-medium text-slate-300 mt-1 truncate">
+            <div className="text-xl sm:text-2xl font-black text-white mt-0.5 leading-none">3</div>
+            <div className="text-xs font-medium text-slate-300 mt-1 truncate">
               2 In Progress <span className="text-slate-500">•</span> 1 Submitted
             </div>
           </div>
@@ -465,10 +465,10 @@ export default function Dashboard({ modalState: _modalState, setModalState, onNa
       </section>
 
       {/* ROW 2.5: Unified Business Control Tower (4 Pillars in 1 Row) */}
-      <section aria-label="Unified Business Control Tower" className="bg-[#111827] border border-[#1E293B] rounded-lg p-3 sm:p-3.5 shadow-sm space-y-2.5">
+      <section aria-label="Unified Business Control Tower" className="bg-[#111827] border border-[#1E293B] rounded-xl p-4 shadow-sm space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-slate-800">
           <div className="flex items-center gap-2.5">
-            <div className="w-7.5 h-7.5 rounded-lg bg-blue-950/80 border border-blue-800 text-blue-400 flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-blue-950/80 border border-blue-800 text-blue-400 flex items-center justify-center shrink-0">
               <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
@@ -477,14 +477,14 @@ export default function Dashboard({ modalState: _modalState, setModalState, onNa
                   UNIFIED BUSINESS CONTROL TOWER
                 </span>
                 <span className="text-slate-500">•</span>
-                <span className="text-[10.5px] text-slate-400">Cross-Domain Autonomous Governance</span>
+                <span className="text-xs text-slate-400">Cross-Domain Autonomous Governance</span>
               </div>
-              <h3 className="text-xs sm:text-[13.5px] font-bold text-white leading-tight">Continuous Compliance, Supply, Workforce &amp; Sustainability Telemetry</h3>
+              <h3 className="text-sm font-bold text-white leading-tight">Continuous Compliance, Supply, Workforce &amp; Sustainability Telemetry</h3>
             </div>
           </div>
 
           <div className="flex items-center gap-2 text-xs shrink-0">
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-950/60 text-emerald-400 border border-emerald-800/60 font-semibold text-[10.5px]">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/60 text-emerald-400 border border-emerald-800/60 font-semibold text-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               All 4 Engines Active
             </span>
@@ -1387,43 +1387,43 @@ export default function Dashboard({ modalState: _modalState, setModalState, onNa
           </div>
 
           {/* Card 3: Upcoming Deadlines (Placed down the AI Advisor to fill the right column gap) */}
-          <div className="bg-[#111827] border border-[#1E293B] rounded-lg p-2.5 sm:p-3 space-y-2">
+          <div className="bg-[#111827] border border-[#1E293B] rounded-xl p-3.5 space-y-2.5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-5.5 h-5.5 rounded-md bg-amber-950/80 border border-amber-800/80 text-amber-400 flex items-center justify-center shrink-0">
-                  <Calendar className="w-3 h-3" />
+                <div className="w-6 h-6 rounded-md bg-amber-950/80 border border-amber-800/80 text-amber-400 flex items-center justify-center shrink-0">
+                  <Calendar className="w-3.5 h-3.5" />
                 </div>
-                <h3 className="text-xs sm:text-[13px] font-bold text-white tracking-wide">Upcoming Deadlines</h3>
+                <h3 className="text-xs font-bold text-white tracking-wide">Upcoming Deadlines</h3>
               </div>
               <button
                 onClick={() => onNavigate && onNavigate('compliance-tasks')}
-                className="text-[11px] text-blue-400 hover:text-blue-300 font-semibold cursor-pointer"
+                className="text-xs text-blue-400 hover:text-blue-300 font-semibold cursor-pointer"
               >
                 View Calendar
               </button>
             </div>
 
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               {/* Item 1: May 15 */}
               <div
                 onClick={() => onNavigate && onNavigate('compliance-tasks')}
-                className="p-1.5 rounded-lg bg-[#141C2B]/60 hover:bg-[#141C2B] border border-slate-800/80 flex items-center justify-between gap-2.5 transition-colors cursor-pointer"
+                className="p-2 rounded-lg bg-[#141C2B]/60 hover:bg-[#141C2B] border border-slate-800/80 flex items-center justify-between gap-3 transition-colors cursor-pointer"
               >
-                <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-7.5 h-7.5 rounded-md bg-[#141C2B] border border-slate-700/80 flex flex-col items-center justify-center overflow-hidden shrink-0">
-                    <div className="w-full bg-rose-600 text-white text-[7.5px] font-bold text-center leading-tight py-0.1">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-9 h-9 rounded-lg bg-[#141C2B] border border-slate-700/80 flex flex-col items-center justify-center overflow-hidden shrink-0">
+                    <div className="w-full bg-rose-600 text-white text-[8px] font-bold text-center leading-tight py-0.5">
                       MAY
                     </div>
-                    <span className="text-[11px] font-black text-white leading-tight">15</span>
+                    <span className="text-xs font-black text-white leading-tight">15</span>
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[11px] font-semibold text-white truncate" title="Fire Safety Certificate Renewal">
+                    <div className="text-xs font-semibold text-white truncate" title="Fire Safety Certificate Renewal">
                       Fire Safety Certificate Renewal
                     </div>
-                    <div className="text-[9.5px] text-slate-400 truncate">TN Fire &amp; Rescue</div>
+                    <div className="text-[10px] text-slate-400 truncate">TN Fire &amp; Rescue</div>
                   </div>
                 </div>
-                <span className="text-[9.5px] font-semibold px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-400 border border-amber-800/80 shrink-0">
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-950/80 text-amber-400 border border-amber-800/80 shrink-0">
                   Due in 2 days
                 </span>
               </div>
@@ -1431,23 +1431,23 @@ export default function Dashboard({ modalState: _modalState, setModalState, onNa
               {/* Item 2: May 18 */}
               <div
                 onClick={() => onNavigate && onNavigate('compliance-tasks')}
-                className="p-1.5 rounded-lg bg-[#141C2B]/60 hover:bg-[#141C2B] border border-slate-800/80 flex items-center justify-between gap-2.5 transition-colors cursor-pointer"
+                className="p-2 rounded-lg bg-[#141C2B]/60 hover:bg-[#141C2B] border border-slate-800/80 flex items-center justify-between gap-3 transition-colors cursor-pointer"
               >
-                <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-7.5 h-7.5 rounded-md bg-[#141C2B] border border-slate-700/80 flex flex-col items-center justify-center overflow-hidden shrink-0">
-                    <div className="w-full bg-rose-600 text-white text-[7.5px] font-bold text-center leading-tight py-0.1">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-9 h-9 rounded-lg bg-[#141C2B] border border-slate-700/80 flex flex-col items-center justify-center overflow-hidden shrink-0">
+                    <div className="w-full bg-rose-600 text-white text-[8px] font-bold text-center leading-tight py-0.5">
                       MAY
                     </div>
-                    <span className="text-[11px] font-black text-white leading-tight">18</span>
+                    <span className="text-xs font-black text-white leading-tight">18</span>
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[11px] font-semibold text-white truncate" title="Professional Tax Payment">
+                    <div className="text-xs font-semibold text-white truncate" title="Professional Tax Payment">
                       Professional Tax Payment
                     </div>
-                    <div className="text-[9.5px] text-slate-400 truncate">Labour Department</div>
+                    <div className="text-[10px] text-slate-400 truncate">Labour Department</div>
                   </div>
                 </div>
-                <span className="text-[9.5px] font-semibold px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-400 border border-amber-800/80 shrink-0">
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-950/80 text-amber-400 border border-amber-800/80 shrink-0">
                   Due in 5 days
                 </span>
               </div>
@@ -1455,23 +1455,23 @@ export default function Dashboard({ modalState: _modalState, setModalState, onNa
               {/* Item 3: May 25 */}
               <div
                 onClick={() => onNavigate && onNavigate('compliance-tasks')}
-                className="p-1.5 rounded-lg bg-[#141C2B]/60 hover:bg-[#141C2B] border border-slate-800/80 flex items-center justify-between gap-2.5 transition-colors cursor-pointer"
+                className="p-2 rounded-lg bg-[#141C2B]/60 hover:bg-[#141C2B] border border-slate-800/80 flex items-center justify-between gap-3 transition-colors cursor-pointer"
               >
-                <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-7.5 h-7.5 rounded-md bg-[#141C2B] border border-slate-700/80 flex flex-col items-center justify-center overflow-hidden shrink-0">
-                    <div className="w-full bg-rose-600 text-white text-[7.5px] font-bold text-center leading-tight py-0.1">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-9 h-9 rounded-lg bg-[#141C2B] border border-slate-700/80 flex flex-col items-center justify-center overflow-hidden shrink-0">
+                    <div className="w-full bg-rose-600 text-white text-[8px] font-bold text-center leading-tight py-0.5">
                       MAY
                     </div>
-                    <span className="text-[11px] font-black text-white leading-tight">25</span>
+                    <span className="text-xs font-black text-white leading-tight">25</span>
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[11px] font-semibold text-white truncate" title="GST Return Filing (GSTR-3B)">
+                    <div className="text-xs font-semibold text-white truncate" title="GST Return Filing (GSTR-3B)">
                       GST Return Filing (GSTR-3B)
                     </div>
-                    <div className="text-[9.5px] text-slate-400 truncate">GST Department</div>
+                    <div className="text-[10px] text-slate-400 truncate">GST Department</div>
                   </div>
                 </div>
-                <span className="text-[9.5px] font-semibold px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-400 border border-amber-800/80 shrink-0">
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-950/80 text-amber-400 border border-amber-800/80 shrink-0">
                   Due in 12 days
                 </span>
               </div>
@@ -1479,23 +1479,23 @@ export default function Dashboard({ modalState: _modalState, setModalState, onNa
               {/* Item 4: Jun 10 */}
               <div
                 onClick={() => onNavigate && onNavigate('compliance-tasks')}
-                className="p-1.5 rounded-lg bg-[#141C2B]/60 hover:bg-[#141C2B] border border-slate-800/80 flex items-center justify-between gap-2.5 transition-colors cursor-pointer"
+                className="p-2 rounded-lg bg-[#141C2B]/60 hover:bg-[#141C2B] border border-slate-800/80 flex items-center justify-between gap-3 transition-colors cursor-pointer"
               >
-                <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-7.5 h-7.5 rounded-md bg-[#141C2B] border border-slate-700/80 flex flex-col items-center justify-center overflow-hidden shrink-0">
-                    <div className="w-full bg-rose-600 text-white text-[7.5px] font-bold text-center leading-tight py-0.1">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-9 h-9 rounded-lg bg-[#141C2B] border border-slate-700/80 flex flex-col items-center justify-center overflow-hidden shrink-0">
+                    <div className="w-full bg-rose-600 text-white text-[8px] font-bold text-center leading-tight py-0.5">
                       JUN
                     </div>
-                    <span className="text-[11px] font-black text-white leading-tight">10</span>
+                    <span className="text-xs font-black text-white leading-tight">10</span>
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[11px] font-semibold text-white truncate" title="Shops & Est. Return Filing">
+                    <div className="text-xs font-semibold text-white truncate" title="Shops & Est. Return Filing">
                       Shops &amp; Est. Return Filing
                     </div>
-                    <div className="text-[9.5px] text-slate-400 truncate">Labour Department</div>
+                    <div className="text-[10px] text-slate-400 truncate">Labour Department</div>
                   </div>
                 </div>
-                <span className="text-[9.5px] font-semibold px-1.5 py-0.2 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-800/80 shrink-0">
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-800/80 shrink-0">
                   Due in 28 days
                 </span>
               </div>

@@ -572,15 +572,26 @@ export default function WorkforcePage({ showToast, _onNavigate, _setModalState }
                         </div>
                       </div>
                     )}
+
+                    {/* Suggested Training Path */}
+                    <div className="space-y-1 pt-2 border-t border-slate-800/60">
+                      <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                        Suggested Training Path:
+                      </span>
+                      <p className="text-xs text-purple-300 font-medium">
+                        {role.suggested_training_path || `${role.role_name} Industry Standard Qualification (NSQF Level 5)`}
+                      </p>
+                    </div>
                   </div>
 
                   <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-slate-500" />
-                      Min. {role.min_training_hours || 40}h Training
+                    <span className="flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Target Headcount: <strong className="text-white">{role.target_headcount || '2–4 Personnel'}</strong></span>
                     </span>
-                    <span className="text-slate-500 text-[11px]">
-                      Standardized Benchmark
+                    <span className="flex items-center gap-1 text-emerald-400 font-medium text-[11px]">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      Standard Mapped
                     </span>
                   </div>
                 </div>
